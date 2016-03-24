@@ -2,7 +2,7 @@
 
 using namespace std;
 
-int const infinito=10000;
+int const infinito=99999999;
 
 void imprimir(int *b,int n)
 {
@@ -30,22 +30,20 @@ void Merge(int *a,int p,int q,int r)
         j=0;
     int k;
 
-    for(k=p; k<=r; k++)
+    for(k=p; k<=r ; k++)
     {
         if(L[i]<=R[j])
-        {
-            a[k]=L[i];i++;
-        }
+        {a[k]=L[i];i++;}
         else
-        {
-            a[k]=R[j];j++;
-        }
-
+        {a[k]=R[j];j++;}
     }
     while(i<n1)
         a[k++]=L[i++];
     while(j<n2)
         a[k++]=R[j++];
+    cout<<"ordeno \n";
+    imprimir(L,n1);
+    imprimir(R,n2);
 }
 void MergeSort(int *a,int p, int r)
 {

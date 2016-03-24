@@ -30,7 +30,7 @@ void Merge(int *a,int p,int q,int r)
         j=0;
     int k;
 
-    for(k=p; k<=r and i<n1 and j<n2; k++)
+    for(k=p; k<=r; k++)
     {
         if(L[i]<=R[j])
         {

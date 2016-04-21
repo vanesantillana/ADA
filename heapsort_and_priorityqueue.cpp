@@ -1,5 +1,7 @@
 #include <vector>
 #include <iostream>
+#include <stdio.h>
+#include <limits.h>
 
 using namespace std;
 
@@ -59,10 +61,55 @@ vector<int> heapsort(vector<int> A)
 	for(int i=h.heapsize; h.heapsize>0; i--) {
 		result.push_back(h.a[1]);
 		swap(h.a[1],h.a[h.heapsize]);
-		h.heapsize--;
+		h.heapsize-=1;
 		h.max_heapify(1);
 	}
 	return result;
+}
+
+class priority_q {
+public:
+    heap h;
+
+    int heap_maximum(){return h.a[1];}
+    int heap_extract_Max();
+    void heap_increase_Key(int, int);
+    void max_heap_insert(int);
+};
+
+int priority_q::heap_extract_Max() {
+    if (h.heapsize <= 0)
+        return -1;
+
+    int max_h = h.a[1];
+    swap(h.a[1], h.a[h.heapsize]);
+    h.heapsize-=1;
+    h.max_heapify(1);
+
+    return max_h;
+}
+
+void priority_q::heap_increase_Key(int i, int key) {
+
+    if(key<h.a[i])
+    h.a[i]=key;
+    while(i>0 && h.a[parent(i)]<h.a[i]) {
+        swap(h.a[i],h.a[parent(i)]);
+        i=parent(i);
+    }
+}
+
+void priority_q::max_heap_insert(int i) {
+    h.heapsize+=1;
+   // h.a.push_back(INT_MIN);
+   // heap_increase_Key(h.a,h.heapsize,key);
+    h.a.push_back(i);
+    int j=h.heapsize;
+    while(parent(j)>0 && h.a[parent(j)]<h.a[j])
+    {
+        swap(h.a[parent(j)],h.a[j]);
+        j = parent(j);
+    }
 }
 
 int main()

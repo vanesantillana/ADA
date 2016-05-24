@@ -1,8 +1,20 @@
 #include <iostream>
 #include <stdio.h>
 #include <limits.h>
+#include <time.h>
 using namespace std;
 int max(int a, int b) {return (a>b)? a:b;}
+
+int CutRod(int *p,int n)
+{
+    if(n<=0) return 0;
+    int q=INT_MIN;
+
+    for(int i=0; i<n ; i++)
+        q=max(q,p[i]+CutRod(p,n-(i+1)));
+    return q;
+}
+
 
 int MemoizedCutRod_Aux(int *p, int n,int *r)
 {
@@ -46,8 +58,22 @@ int BottomUpCutRod(int *p,int n)
 
 int main()
 {
-    int a[]={1,5,8,9,10,17,17,20};
-    cout<<BottomUpCutRod(a,8)<<endl;
-    cout<<MemoizedCutRod(a,8);
+    int a[]={1,2,3,5,8,9,10,11,12,13,17,17,20,45,3,5,8,9,10,11,12,13,17,24,34,38,40,2,42,47,48};
+    int n=20;
+    clock_t start = clock();
+    CutRod(a,n);
+    printf("Tiempo transcurrido: %f",((double)clock() - start)/CLOCKS_PER_SEC);
+    cout<<"\nResultado CutRod: "<<CutRod(a,n)<<endl;
+
+    clock_t start1 = clock();
+    MemoizedCutRod(a,n);
+    printf("Tiempo transcurrido: %f",((double)clock() - start1)/CLOCKS_PER_SEC);
+    cout<<"\nResultado Memoized: "<<MemoizedCutRod(a,n)<<endl;
+    
+    clock_t start2 = clock();
+    BottomUpCutRod(a,n);
+    printf("Tiempo transcurrido: %f",((double)clock() - start2)/CLOCKS_PER_SEC);
+    
+    cout<<"\nResultado Bottom: "<<BottomUpCutRod(a,n)<<endl;
     return 0;
 }

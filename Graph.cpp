@@ -1,19 +1,25 @@
 #include <vector>
 #include <iostream>
 #include <string>
+#include <limits.h>
+#include <stdio.h>
+#include <time.h>
+#include <queue>
 
 using namespace std;
 
 class GNodo
 {
     public:
+    string nombre;
+    int color=0,d=0;
+    string pi;
+    int time=0;
 
-        string nombre;
-
-        GNodo(string nom)
-        {
-            nombre=nom;
-        }
+    GNodo(string nom)
+    {
+        nombre=nom;
+    }
 };
 
 class Arista
@@ -21,12 +27,11 @@ class Arista
     public:
     GNodo * ini;
     GNodo * fin;
-    int peso=0;
-    Arista(GNodo * i,GNodo *f,int p)
+
+    Arista(GNodo * i,GNodo *f)
     {
         ini=i;
         fin=f;
-        peso=p;
     }
 };
 
@@ -35,13 +40,14 @@ class Grafo
     public:
     vector<GNodo * > nodos;
     vector<Arista> aristas;
+    queue<string> cola;
 
     void CreoNodos(string nom)
     {
         GNodo* nuevo=new GNodo(nom);
         nodos.push_back(nuevo);
     }
-    void CreoAristas(string n1, string n2,int peso)
+    void CreoAristas(string n1, string n2)
     {
         for(int i=0;i<nodos.size();i++)
         {
@@ -49,7 +55,7 @@ class Grafo
                 for(int j=0;j<nodos.size();j++)
                     if(nodos[j]->nombre==n2)
                     {
-                        Arista p(nodos[i],nodos[j],peso);
+                        Arista p(nodos[i],nodos[j]);
                         aristas.push_back(p);
                     }
         }
@@ -68,6 +74,73 @@ class Grafo
             cout<<aristas[i].ini->nombre<<"->"<<aristas[i].fin->nombre<<endl;
         }
     }
+    int busca(string a)
+    {
+        for(int i=0;i<nodos.size();i++)
+            if(nodos[i]->nombre==a)
+                return i;
+    }
+
+    void bfs(string s)
+    {
+        int i;
+        for(i=0;i<nodos.size();i++)
+            if(nodos[i]->nombre==s)
+            {
+                nodos[i]->color=1;// es gris
+                nodos[i]->d=0;
+                nodos[i]->pi="nil";
+            }
+        cola.push(s);
+        while(!cola.empty())
+        {
+            string u=cola.front();
+            cola.pop();
+            int iter=busca(u);
+            for(int j=0;j<aristas.size();j++)
+            {
+                if(aristas[j].ini->nombre==u)
+                {
+                    if(aristas[j].fin->color==0)//es blanco
+                    {
+                        aristas[j].fin->color=1;
+                        aristas[j].fin->d=nodos[iter]->d+1;
+                        aristas[j].fin->pi=u;
+                        cola.push(aristas[j].fin->nombre);
+                    }
+                }
+
+            }
+            nodos[iter]->color=2;//negro
+            cout<<nodos[iter]->nombre<<" es negro"<<endl;
+        }
+    }
+    void dfs_visit(string s)
+    {
+        int t=0;
+        for(int i=0;i<nodos.size();i++)
+            if(nodos[i]->nombre==s)
+            {
+                t=nodos[i]->time+1;
+                nodos[i]->d=t;
+                nodos[i]->color=1;
+            }
+        for(int j=0;j<aristas.size();j++)
+        {
+            if(aristas[j].ini->nombre==s)
+            {
+                if(aristas[j].fin->color==0)//es blanco
+                {
+                    aristas[j].fin->color=1;
+                    aristas[j].fin->d=nodos[iter]->d+1;
+                    aristas[j].fin->pi=u;
+                    cola.push(aristas[j].fin->nombre);
+                }
+            }
+
+        }
+    }
+
 };
 
 
@@ -79,13 +152,14 @@ int main()
     v.CreoNodos("C");
     v.CreoNodos("D");
 
-    v.CreoAristas("A","B",2);
-    v.CreoAristas("A","C",3);
-    v.CreoAristas("C","B",4);
-    v.CreoAristas("B","D",9);
-    v.CreoAristas("D","C",5);
+    v.CreoAristas("A","B");
+    v.CreoAristas("A","C");
+    v.CreoAristas("C","B");
+    v.CreoAristas("B","D");
+    v.CreoAristas("D","C");
 
     v.showGrafo();
+    v.bfs("A");
 
     return 0;
 }

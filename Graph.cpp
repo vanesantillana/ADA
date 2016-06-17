@@ -12,7 +12,7 @@ class GNodo
 {
     public:
     string nombre;
-    int color=0,d=0;
+    int color=0,d=0,f=0;
     string pi;
     int time=0;
 
@@ -115,30 +115,57 @@ class Grafo
             cout<<nodos[iter]->nombre<<" es negro"<<endl;
         }
     }
+    void dfs(string s)
+    {
+        int i,j;
+        for(i=0;i<nodos.size();i++)
+            if(nodos[i]->nombre==s)
+                nodos[i]->color=0;
+
+        nodos[i]->time=0;
+
+        for(j=0;j<aristas.size();j++)
+        {
+            if(aristas[j].ini->nombre==s)
+            {
+                if(aristas[j].fin->color==0)//es blanco
+                {
+                    dfs_visit(s);
+                }
+            }
+
+        }
+
+    }
+
     void dfs_visit(string s)
     {
-        int t=0;
-        for(int i=0;i<nodos.size();i++)
+        int j,i;
+        for(i=0;i<nodos.size();i++)
             if(nodos[i]->nombre==s)
             {
-                t=nodos[i]->time+1;
-                nodos[i]->d=t;
+                nodos[i]->time+=1;
+                nodos[i]->d=nodos[i]->time;
                 nodos[i]->color=1;
             }
-        for(int j=0;j<aristas.size();j++)
+        for(j=0;j<aristas.size();j++)
         {
             if(aristas[j].ini->nombre==s)
             {
                 if(aristas[j].fin->color==0)//es blanco
                 {
                     aristas[j].fin->color=1;
-                    aristas[j].fin->d=nodos[iter]->d+1;
-                    aristas[j].fin->pi=u;
-                    cola.push(aristas[j].fin->nombre);
+                    aristas[j].fin->pi=s;
+                    dfs_visit(aristas[j].fin->nombre);
                 }
             }
 
         }
+        nodos[i]->color=2;
+        cout<<nodos[i]->nombre<<" es negro"<<endl;
+        nodos[i]->time+=1;
+        nodos[i]->f=nodos[i]->time;
+
     }
 
 };
@@ -160,6 +187,7 @@ int main()
 
     v.showGrafo();
     v.bfs("A");
+    //v.dfs("A");
 
     return 0;
 }
